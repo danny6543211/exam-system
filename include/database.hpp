@@ -17,6 +17,12 @@ struct __QuerySet {
     std::vector<std::vector<std::string>> data;
 };
 
+/*
+    show()          打印所有查询数据
+    columnName()    列名
+    data()          返回 vector<vector<string>> 的表格数据
+    operator[i]     下标访问第i行数据，第0行为列名
+*/
 class QuerySet {
 private:
     std::unique_ptr<__QuerySet> querySet;
