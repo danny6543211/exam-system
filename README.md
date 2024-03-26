@@ -10,7 +10,7 @@
 .\g.bat
 ```
 
-* sqlite3 命令行环境
+* 数据库
 ```
 .\sqlite3.exe db.sqlite3
 ```
