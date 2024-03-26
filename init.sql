@@ -1,10 +1,10 @@
-create table if not exists exam_question(
-    id int primary key not null, 
-    title text not null,
-    question_text text not null, 
-    options text not null, 
-    correct_option_index text not null
+CREATE TABLE IF NOT EXISTS exam_question(
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    title TEXT NOT NULL,
+    question_text texTEXTt NOT NULL, 
+    options TEXT NOT NULL, 
+    correct_option_index TEXT NOT NULL
 );
 
-insert into exam_question (id, title, question_text, options, correct_option_index)
-values (1, 'qweqweqwe', 'qweqweqwe', 'qweqweqwe', 'qweqweqwe');
+INSERT INTO exam_question (title, question_text, options, correct_option_index)
+VALUES ('test_title', 'test_question_text', 'test_options', 'test_correct_option_index');
