@@ -1,6 +1,7 @@
 #include <iostream>
 #include <windows.h>
 #include "./include/question.h"
+#include "./include/exam.h"
 
 
 int main() {
@@ -22,7 +23,7 @@ int main() {
         switch (buffer_read[0]) {
             case '1':
                 // 添加考试模块......
-                // exam.run();
+                //exam.run1();
                 break;
             
             case '2':
