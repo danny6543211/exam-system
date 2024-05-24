@@ -1,44 +1,59 @@
 #include <iostream>
 #include <windows.h>
 #include "./include/question.h"
-#include "./include/exam.h"
+// #include "./include/exam.h"
 
 
-int main() {
-    const size_t READ_BUFFER_SIZE = 256;
+class ExamSystem {
+public:
+    ExamSystem() {}
+    ~ExamSystem() {}
+    
+    void run() {
+        char bufferRead[READ_BUFFER_SIZE];
+        QuestionManagement questionManagement;
 
-    char buffer_read[READ_BUFFER_SIZE];
-    question_management question_management;
+        while (true) {
+            system("cls");
+            printHead();
+            printMenu();
+            
+            std::cin.getline(bufferRead, READ_BUFFER_SIZE);
+            switch (bufferRead[0]) {
+            case '1':
+                // exam...
+                break;
+            case '2':
+                questionManagement.run();
+                break;
+            case 'q':
+            case 'Q':
+                return;
+            default:
+                break;
+            }
+        }
+    }
 
-    while (true) {
-        system("cls");
+private:
+    void printHead() {
         std::cout << "------ Exam System ------\n\n";
+    }
+
+    void printMenu() {
+        system("cls");
+        printHead();
         std::cout << "1) Commence Exam\n";
         std::cout << "2) Question Management\n";
         std::cout << "q) Quit\n";
-
-
-        std::cout << "\n:";
-        std::cin.getline(buffer_read, READ_BUFFER_SIZE);
-        switch (buffer_read[0]) {
-            case '1':
-                // 添加考试模块......
-                //exam.run1();
-                break;
-            
-            case '2':
-                question_management.run();
-                break;
-
-            case 'q':
-            case 'Q':
-                return 0;
-                break;
-
-            default:
-                break;
-        }
+        std::cout << "\n";
     }
+};
+
+
+int main() {
+    ExamSystem examSystem;
+    examSystem.run();
 
     return 0;
 }
