@@ -1,6 +1,7 @@
 #ifndef QUESTION_H
 #define QUESTION_H
 
+#include <cstring>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -13,6 +14,7 @@
 const size_t READ_BUFFER_SIZE = 256;
 
 struct Question {
+    int id = -1;
     std::string questionText;
     std::vector<std::string> options;
     std::string answer; 
@@ -24,6 +26,7 @@ struct Question {
     ~Question() {}
 
     void reset() {
+        id = -1;
         questionText = "";
         options.clear();
         answer.clear();
@@ -98,6 +101,7 @@ public:
         while (sqlite3_step(questionsStmt) == SQLITE_ROW) {
             Question question;
             auto id = sqlite3_column_int(questionsStmt, 0);
+            question.id = id;
             question.questionText = (char*)sqlite3_column_text(questionsStmt, 1);    
             question.answer = (char*)sqlite3_column_text(questionsStmt, 2);    
             
@@ -123,6 +127,16 @@ public:
         return questions;
     }   
 
+    void deleteQuestion(int id) {
+        auto questions = getAllQuesions();
+        std::string sql = "DELETE FROM questions where id = " + std::to_string(id) + ";";
+        int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, nullptr);
+        sqliteCheck(db, rc, SQLITE_OK);
+        sql = "DELETE FROM options where id = " + std::to_string(id) + ";";
+        rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, nullptr);
+        sqliteCheck(db, rc, SQLITE_OK);
+    }
+
 private:
     void sqliteCheck(sqlite3* db, int rc, int check_status) {
         if (rc != check_status)
@@ -141,6 +155,7 @@ public:
 
     void run() {
         while (true) {
+            system("cls");
             printMenu();
             std::cin.getline(bufferRead, READ_BUFFER_SIZE);
             switch (bufferRead[0]) {
@@ -266,7 +281,7 @@ private:
         system("cls");
         std::cout << "------ All Questions ------\n";
         for (int i = 0; i < queryset.size(); i++) {
-            std::cout << "ID: " << i+1 << "\n\n";
+            std::cout << "ID: " << queryset[i].id << "\n\n";
             std::cout << "Question text:\n" << queryset[i].questionText << "\n\n";
             std::cout << "Question options:\n";
             for (int j = 0; j < queryset[i].options.size(); j++) {
@@ -283,7 +298,28 @@ private:
     }
 
     void deleteQuestion() {
-        
+        QuestionDatabase questionDatabase;
+        auto queryset = questionDatabase.getAllQuesions();
+
+        system("cls");
+        std::cout << "------ All Questions ------\n";
+        for (int i = 0; i < queryset.size(); i++) {
+            std::cout << "ID: " << i+1 << "\n\n";
+            std::cout << "Question text:\n" << queryset[i].questionText << "\n\n";
+            std::cout << "Question options:\n";
+            for (int j = 0; j < queryset[i].options.size(); j++) {
+                std::cout << (char)('a'+j) << ") " << queryset[i].options[j] << "\n";
+            }
+            std::cout << "\nCorrect options:\n";
+            for (int j = 0; j< queryset[i].answer.size(); j++) {
+                std::cout << queryset[i].answer[j] << " ";
+            }
+            std::cout << "\n";
+            std::cout << "---------------------------\n";
+        }
+
+        std::cin.getline(bufferRead, READ_BUFFER_SIZE);
+        questionDatabase.deleteQuestion(std::stoi(bufferRead));
     }
 
 };
