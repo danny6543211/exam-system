@@ -15,6 +15,7 @@ const size_t READ_BUFFER_SIZE = 256;
 
 struct Question {
     int id = -1;
+    std::string subject;
     std::string questionText;
     std::vector<std::string> options;
     std::string answer; 
@@ -27,6 +28,7 @@ struct Question {
 
     void reset() {
         id = -1;
+        subject = "";
         questionText = "";
         options.clear();
         answer.clear();
@@ -45,6 +47,7 @@ public:
         
         const char* sql = "CREATE TABLE IF NOT EXISTS questions("
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "subject INTEGER TEXT NOT NULL, "
                           "question_text TEXT NOT NULL, "
                           "answer TEXT NOT NULL);";
         rc = sqlite3_exec(db, sql, nullptr, nullptr, nullptr);
@@ -75,12 +78,13 @@ public:
         sqliteCheck(db, rc, SQLITE_DONE);
         
         sqlite3_reset(stmt);
-        sql = "INSERT INTO questions (question_text, answer) VALUES (?, ?);";
+        sql = "INSERT INTO questions (subject, question_text, answer) VALUES (?, ?, ?);";
         rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
         sqliteCheck(db, rc, SQLITE_OK);
 
-        sqlite3_bind_text(stmt, 1, question.questionText.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 2, question.answer.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 1, question.subject.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, question.questionText.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 3, question.answer.c_str(), -1, SQLITE_STATIC);
         rc = sqlite3_step(stmt);
         sqliteCheck(db, rc, SQLITE_DONE);
 
@@ -195,6 +199,20 @@ private:
     void addNewQuestion() {
         Question question;
 
+        auto readSubject = [&]()->int {
+            system("cls");
+            printHead();
+            std::cout << "Input the subject of question.\n";
+            std::cout << "\n:";
+            std::cin.getline(bufferRead, READ_BUFFER_SIZE);
+            question.subject = bufferRead;
+
+            if (question.subject.length() == 0)
+                return 1;
+            else 
+                return 0;
+        };
+
         auto readQuestionText = [&]()->int {
             system("cls");
             printHead();
@@ -242,7 +260,7 @@ private:
         };
 
         while (true) {
-            if (readQuestionText() || readOptions() || readAnswer())
+            if (readSubject() || readQuestionText() || readOptions() || readAnswer())
                 std::cout << "Text can not be empty, please input again\n";
             else {
                 printHead();
