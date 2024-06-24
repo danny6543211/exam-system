@@ -324,7 +324,7 @@ private:
         system("cls");
         std::cout << "------ All Questions ------\n";
         for (int i = 0; i < queryset.size(); i++) {
-            std::cout << "ID: " << i+1 << "\n\n";
+            std::cout << "ID: " << queryset[i].id << "\n\n";
             std::cout << "Question text:\n" << queryset[i].questionText << "\n\n";
             std::cout << "Question options:\n";
             for (int j = 0; j < queryset[i].options.size(); j++) {
