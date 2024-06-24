@@ -106,8 +106,9 @@ public:
             Question question;
             auto id = sqlite3_column_int(questionsStmt, 0);
             question.id = id;
-            question.questionText = (char*)sqlite3_column_text(questionsStmt, 1);    
-            question.answer = (char*)sqlite3_column_text(questionsStmt, 2);    
+            question.subject = (char*)sqlite3_column_text(questionsStmt, 1);
+            question.questionText = (char*)sqlite3_column_text(questionsStmt, 2);
+            question.answer = (char*)sqlite3_column_text(questionsStmt, 3);
             
             rc = sqlite3_reset(optionsStmt);
             sqliteCheck(db, rc, SQLITE_OK);
@@ -300,6 +301,7 @@ private:
         std::cout << "------ All Questions ------\n";
         for (int i = 0; i < queryset.size(); i++) {
             std::cout << "ID: " << queryset[i].id << "\n\n";
+            std::cout << "Question subject: \n"<< queryset[i].subject << "\n\n";
             std::cout << "Question text:\n" << queryset[i].questionText << "\n\n";
             std::cout << "Question options:\n";
             for (int j = 0; j < queryset[i].options.size(); j++) {
